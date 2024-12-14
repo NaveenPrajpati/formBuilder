@@ -11,6 +11,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import Octicons from 'react-native-vector-icons/Octicons';
+import Fontisto from 'react-native-vector-icons/Fontisto';
 
 // Define a type for the supported icon sets
 type IconSet =
@@ -22,6 +23,7 @@ type IconSet =
   | 'EvilIcons'
   | 'FontAwesome5'
   | 'Octicons'
+  | 'Fontisto'
   | 'Entypo'; // ... add other icon sets here
 
 // Define a type for the icon component props
@@ -46,6 +48,7 @@ const IconSets: Record<IconSet, React.ComponentType<any>> = {
   Feather,
   FontAwesome5,
   Octicons,
+  Fontisto,
 };
 
 const VectorIcon: React.FC<IconComponentProps> = ({

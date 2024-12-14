@@ -15,14 +15,7 @@ export default function ModalLayout({onRequestClose, children}: proptype) {
       visible={true}
       onRequestClose={onRequestClose}>
       <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          {children}
-          <Pressable
-            className=" w-50 h-50 rounded-md bg-red-400"
-            onPress={onRequestClose}>
-            <VectorIcon iconName="close" />
-          </Pressable>
-        </View>
+        <View style={styles.modalView}>{children}</View>
       </View>
     </Modal>
   );

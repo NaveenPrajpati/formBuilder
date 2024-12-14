@@ -1,6 +1,7 @@
 import React from 'react';
 import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import VectorIcon from '../VectorIcon';
+import GridOptions from '../GridOptions';
 
 type proptype = {
   onRequestClose: () => void;
@@ -14,7 +15,8 @@ export default function AddOptions({onRequestClose, addField}: proptype) {
       label: 'Short answer',
       icon: (
         <VectorIcon
-          iconName="close"
+          iconName="short-text"
+          iconPack="MaterialIcons"
           size={30}
           color="gray"
           className=" block mr-1"
@@ -26,7 +28,8 @@ export default function AddOptions({onRequestClose, addField}: proptype) {
       label: 'Paragraph',
       icon: (
         <VectorIcon
-          iconName="close"
+          iconName="short-text"
+          iconPack="MaterialIcons"
           size={30}
           color="gray"
           className=" block mr-1"
@@ -38,7 +41,8 @@ export default function AddOptions({onRequestClose, addField}: proptype) {
       label: 'Linear Scale',
       icon: (
         <VectorIcon
-          iconName="close"
+          iconName="linear-scale"
+          iconPack="MaterialIcons"
           size={30}
           color="gray"
           className=" block mr-1"
@@ -47,10 +51,11 @@ export default function AddOptions({onRequestClose, addField}: proptype) {
     },
     {
       name: 'checkbox',
-      label: 'Checkboxs',
+      label: 'Checkbox',
       icon: (
         <VectorIcon
-          iconName="close"
+          iconName="check-box"
+          iconPack="MaterialIcons"
           size={30}
           color="gray"
           className=" block mr-1"
@@ -62,7 +67,8 @@ export default function AddOptions({onRequestClose, addField}: proptype) {
       label: 'Dropdown',
       icon: (
         <VectorIcon
-          iconName="close"
+          iconName="arrow-drop-down-circle"
+          iconPack="MaterialIcons"
           size={30}
           color="gray"
           className=" block mr-1"
@@ -74,19 +80,8 @@ export default function AddOptions({onRequestClose, addField}: proptype) {
       label: 'Multiple Choice',
       icon: (
         <VectorIcon
-          iconName="close"
-          size={30}
-          color="gray"
-          className=" block mr-1"
-        />
-      ),
-    },
-    {
-      name: 'multipleChoiceGrid',
-      label: 'Multiple Choice Grid',
-      icon: (
-        <VectorIcon
-          iconName="close"
+          iconName="radio-btn-active"
+          iconPack="Fontisto"
           size={30}
           color="gray"
           className=" block mr-1"
@@ -95,10 +90,11 @@ export default function AddOptions({onRequestClose, addField}: proptype) {
     },
     {
       name: 'checkboxGrid',
-      label: 'Checkbox Grid',
+      label: 'Grid',
       icon: (
         <VectorIcon
-          iconName="close"
+          iconName="nav-icon-grid-a"
+          iconPack="Fontisto"
           size={30}
           color="gray"
           className=" block mr-1"
@@ -106,11 +102,26 @@ export default function AddOptions({onRequestClose, addField}: proptype) {
       ),
     },
     {
+      name: 'multipleChoiceGrid',
+      label: 'Checkbox Grid',
+      icon: (
+        <VectorIcon
+          iconName="nav-icon-grid"
+          iconPack="Fontisto"
+          size={30}
+          color="gray"
+          className=" block mr-1"
+        />
+      ),
+    },
+
+    {
       name: 'date',
       label: 'Date',
       icon: (
         <VectorIcon
-          iconName="close"
+          iconName="date-range"
+          iconPack="MaterialIcons"
           size={30}
           color="gray"
           className=" block mr-1"
@@ -122,7 +133,8 @@ export default function AddOptions({onRequestClose, addField}: proptype) {
       label: 'Time',
       icon: (
         <VectorIcon
-          iconName="close"
+          iconName="clock"
+          iconPack="Fontisto"
           size={30}
           color="gray"
           className=" block mr-1"
@@ -131,7 +143,7 @@ export default function AddOptions({onRequestClose, addField}: proptype) {
     },
   ];
 
-  function setOption(text: String) {
+  function setOption(text: string) {
     onRequestClose();
     addField(text);
   }
@@ -143,32 +155,11 @@ export default function AddOptions({onRequestClose, addField}: proptype) {
       visible={true}
       onRequestClose={onRequestClose}>
       <View className=" flex-1">
-        <View className=" flex-1 bg-black/40 flex-row flex-wrap">
-          {options.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              className="m-5 w-[100px] h-[100px] rounded-md bg-white flex justify-center items-center"
-              onPress={() => setOption(item.name)}>
-              <VectorIcon
-                iconName="close"
-                size={30}
-                color="gray"
-                className=" block mr-1"
-              />
-              <Text className=" text-gray-500">{item.label}</Text>
-            </TouchableOpacity>
-          ))}
-          <TouchableOpacity
-            className="w-[100px] h-[100px] rounded-md bg-red-400 flex justify-center items-center"
-            onPress={onRequestClose}>
-            <VectorIcon
-              iconName="close"
-              size={30}
-              color="white"
-              className=" block mr-1"
-            />
-          </TouchableOpacity>
-        </View>
+        <GridOptions
+          options={options}
+          onRequestClose={onRequestClose}
+          setOption={setOption}
+        />
       </View>
     </Modal>
   );

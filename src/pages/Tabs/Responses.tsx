@@ -1,10 +1,10 @@
 import {View, Text} from 'react-native';
 import React from 'react';
 
-export default function FormPreview() {
+export default function Responses() {
   return (
     <View>
-      <Text>FormPreview</Text>
+      <Text>Responses</Text>
     </View>
   );
 }
