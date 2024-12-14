@@ -52,7 +52,11 @@ export default function Routes() {
     <View className=" flex-1">
       <StatusBar barStyle={'dark-content'} backgroundColor={'white'} />
       <Stack.Navigator screenOptions={{}}>
-        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{headerShown: false}}
+        />
         {/* <Stack.Screen name="Settings" component={Settings} /> */}
         <Stack.Screen
           name="Dashboard"
