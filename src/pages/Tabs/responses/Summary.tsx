@@ -1,10 +1,10 @@
 import {View, Text} from 'react-native';
 import React from 'react';
 
-export default function Responses() {
+export default function Summary() {
   return (
     <View>
-      <Text>Responses</Text>
+      <Text>Summary</Text>
     </View>
   );
 }

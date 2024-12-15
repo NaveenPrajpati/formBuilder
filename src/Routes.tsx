@@ -4,14 +4,15 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Home from './pages/Home';
 import Header from './components/Header';
 import FormList from './pages/FormList';
-import CreateForm from './pages/Tabs/CreateForm';
+import CreateForm from './pages/tabs/CreateForm';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import FormPreview from './pages/Tabs/FormPreview';
+import FormPreview from './pages/tabs/FormPreview';
 import Templates from './pages/Templates';
-import Responses from './pages/Tabs/Responses';
+import Responses from './pages/tabs/responses/Responses';
 import {DarkTheme} from '@react-navigation/native';
-import FormSetting from './pages/Tabs/FormSetting';
+import FormSetting from './pages/tabs/FormSetting';
 import Settings from './pages/Settings';
+import ResponseTabs from './pages/tabs/ResponseTabs';
 const Tab = createMaterialTopTabNavigator();
 
 function MyTabs() {
@@ -36,7 +37,7 @@ function MyTabs() {
       <Tab.Screen
         name="Responses"
         options={{tabBarLabel: 'RESPONSES'}}
-        component={Responses}
+        component={ResponseTabs}
       />
       <Tab.Screen
         name="FormSetting"

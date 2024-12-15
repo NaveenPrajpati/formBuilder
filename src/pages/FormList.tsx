@@ -178,7 +178,9 @@ export default function FormList() {
                   left={() => <List.Icon icon="clip" />}
                 />
                 <List.Item
-                  onPress={() => setVisible(true)}
+                  onPress={() => {
+                    setVisible(true);
+                  }}
                   title="Delete Form"
                   left={() => <List.Icon icon="delete" />}
                 />

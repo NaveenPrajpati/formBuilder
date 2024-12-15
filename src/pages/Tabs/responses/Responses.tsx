@@ -8,25 +8,29 @@ import {
   Switch,
   Image,
 } from 'react-native';
-import React, {useState} from 'react';
-import VectorIcon from '../../components/VectorIcon';
-import CreateFromMenu from '../../components/CreateFromMenu';
-import AddOptions from '../../components/modals/AddOptions';
-import SwitchTag from '../../components/tags/SwitchTag';
+import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
+import VectorIcon from '../../../components/VectorIcon';
+import CreateFromMenu from '../../../components/CreateFromMenu';
+import AddOptions from '../../../components/modals/AddOptions';
+import SwitchTag from '../../../components/tags/SwitchTag';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {useAppDispatch, useAppSelector} from '../../redux/hooks';
+import {useAppDispatch, useAppSelector} from '../../../redux/hooks';
 import {
   addField,
   addHeader,
   deleteField,
   updateField,
-} from '../../redux/slices/formSlice';
-import DropdownTag from '../../components/tags/DropdownTag';
+} from '../../../redux/slices/formSlice';
+import DropdownTag from '../../../components/tags/DropdownTag';
 import axios from 'axios';
-import {ResponseCreateApi} from '../../service/endPoints';
-import {axiosInstance} from '../../service/interceptor';
+import {
+  ResponseCreateApi,
+  ResponsesByFormApi,
+} from '../../../service/endPoints';
+import {axiosInstance} from '../../../service/interceptor';
 import {ActivityIndicator} from 'react-native-paper';
-export default function FormPreview() {
+import {useFocusEffect} from '@react-navigation/native';
+export default function Responses() {
   const [showAddItem, setShowAddItem] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
   const [fieldResponses, setFieldResponses] = useState({});
@@ -97,6 +101,27 @@ export default function FormPreview() {
       [fieldId]: updatedAnswers,
     }));
   };
+
+  const [allResponses, setAllResponses] = useState([]);
+
+  async function fetchResponses() {
+    axiosInstance
+      .get(ResponsesByFormApi(selectedForm._id))
+      .then(res => {
+        console.log(res.data);
+        setAllResponses(res.data.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchResponses();
+      return () => {};
+    }, []),
+  );
 
   return (
     <View className="bg-purple-100 flex justify-between  flex-1 ">

@@ -3,3 +3,4 @@ export const FormCreateApi = '/form';
 export const FormUpdateApi = (id: string) => `/form/${id}`;
 export const FormByIdApi = (id: string) => `/form/${id}`;
 export const ResponseCreateApi = '/response';
+export const ResponsesByFormApi = (id: string) => `/response/${id}`;
