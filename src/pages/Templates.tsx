@@ -1,8 +1,15 @@
 import {View, Text, ScrollView, TouchableOpacity} from 'react-native';
 import React from 'react';
 import VectorIcon from '../components/VectorIcon';
+import {useAppDispatch, useAppSelector} from '../redux/hooks';
+import {saveForm} from '../redux/slices/formSlice';
+import {blackformTemplate} from '../utils/formTemplates';
+import ModalLayout from '../components/modals/ModalLayout';
+import {ActivityIndicator} from 'react-native-paper';
 
 export default function Templates({navigation}) {
+  const dispatch = useAppDispatch();
+  const {formSaving} = useAppSelector(state => state.form);
   const options = [
     {
       icon: <VectorIcon iconName="plus" size={80} color="white" />,
@@ -16,6 +23,7 @@ export default function Templates({navigation}) {
 
   async function handleclick(params: string) {
     if (params == 'Blank') {
+      await dispatch(saveForm(blackformTemplate));
       navigation.navigate('Tabs', {screen: 'CreateForm'});
     }
   }
@@ -57,6 +65,14 @@ export default function Templates({navigation}) {
           ))}
         </ScrollView>
       </ScrollView>
+      {formSaving && (
+        <ModalLayout onRequestClose={() => {}}>
+          <View className=" h-[100px] w-[100px] flex justify-center items-center">
+            <ActivityIndicator size={40} />
+            <Text className=" text-black font-medium">Creating form...</Text>
+          </View>
+        </ModalLayout>
+      )}
     </View>
   );
 }

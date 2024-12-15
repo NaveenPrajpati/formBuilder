@@ -2,22 +2,22 @@ import {View, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 import VectorIcon from './VectorIcon';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
-import {saveForm} from '../redux/slices/formSlice';
+import {saveForm, updateForm} from '../redux/slices/formSlice';
 
 export default function CreateFromMenu() {
   const dipatch = useAppDispatch();
-  const {formFields, header, description, headerImg} = useAppSelector(
-    state => state.form,
-  );
+  const {formFields, header, description, headerImg, selectedForm} =
+    useAppSelector(state => state.form);
   const handleSaveForm = async () => {
-    const formData = {
-      header,
-      description,
-      headerImg,
-      fields: formFields,
-    };
+    const {_id, ...otherData} = selectedForm;
 
-    dipatch(saveForm(formData));
+    const formData = {
+      id: _id,
+      data: otherData,
+    };
+    console.log(JSON.stringify(formData, null, 2));
+
+    dipatch(updateForm(formData));
   };
 
   return (

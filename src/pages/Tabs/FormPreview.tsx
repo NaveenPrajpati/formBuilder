@@ -24,14 +24,13 @@ import {
 import DropdownTag from '../../components/tags/DropdownTag';
 import axios from 'axios';
 import {ResponseCreateApi} from '../../service/endPoints';
+import {axiosInstance} from '../../service/interceptor';
 export default function FormPreview() {
   const [showAddItem, setShowAddItem] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
   const [fieldResponses, setFieldResponses] = useState({});
   const dispatch = useAppDispatch();
-  const {formFields, header, description, headerImg} = useAppSelector(
-    state => state.form,
-  );
+  const {selectedForm} = useAppSelector(state => state.form);
 
   async function submitAnswer() {
     const formattedResponses = Object.entries(fieldResponses).map(
@@ -42,7 +41,7 @@ export default function FormPreview() {
     );
 
     try {
-      const response = await axios.post(ResponseCreateApi, {
+      const response = await axiosInstance.post(ResponseCreateApi, {
         formId: 'your-form-id', // Replace with your actual form ID
         answers: formattedResponses,
       });
@@ -51,22 +50,25 @@ export default function FormPreview() {
       console.error('Error submitting answers:', error);
     }
   }
-  const handleResponseChange = (questionId, value) => {
+  const handleResponseChange = (fieldId, value) => {
+    if (!fieldId) return;
     setFieldResponses(prev => ({
       ...prev,
-      [questionId]: value, // Update the answer for the given questionId
+      [fieldId]: value,
     }));
   };
 
-  const handleMultipleChoiceChange = (questionId, option) => {
-    const existingAnswers = fieldResponses[questionId] || [];
+  const handleMultipleChoiceChange = (fieldId, option) => {
+    if (!fieldId || !option) return;
+
+    const existingAnswers = fieldResponses[fieldId] || [];
     const updatedAnswers = existingAnswers.includes(option)
-      ? existingAnswers.filter(o => o !== option) // Remove if already selected
-      : [...existingAnswers, option]; // Add if not selected
+      ? existingAnswers.filter(o => o !== option)
+      : [...existingAnswers, option];
 
     setFieldResponses(prev => ({
       ...prev,
-      [questionId]: updatedAnswers,
+      [fieldId]: updatedAnswers,
     }));
   };
 
@@ -74,12 +76,31 @@ export default function FormPreview() {
     dispatch(updateField({id, key, value}));
   };
 
+  const handleClearForm = () => {
+    setFieldResponses({});
+  };
+
+  const handleGridChange = (fieldId, rowIndex, columnIndex) => {
+    const key = `${rowIndex}-${columnIndex}`;
+    const existingAnswers = fieldResponses[fieldId] || [];
+    const updatedAnswers = existingAnswers.includes(key)
+      ? existingAnswers.filter(k => k !== key)
+      : [...existingAnswers, key];
+
+    setFieldResponses(prev => ({
+      ...prev,
+      [fieldId]: updatedAnswers,
+    }));
+  };
+
+  console.log(fieldResponses);
+
   return (
     <View className="bg-purple-100 flex justify-between  flex-1 ">
       <ScrollView className=" p-4 ">
         <View className="mt-2 bg-gray-100  h-[100px] flex justify-center items-center rounded-lg">
           <Image
-            source={{uri: headerImg}}
+            source={{uri: selectedForm?.headerImg}}
             alt="no img"
             width={200}
             height={100}
@@ -87,11 +108,13 @@ export default function FormPreview() {
           />
         </View>
         <View className=" p-4 border-t-8  border-purple-700 rounded-2xl bg-white mt-4">
-          <Text className=" font-normal text-3xl capitalize">{header}</Text>
-          <Text className=" font-medium mt-4">{description}</Text>
+          <Text className=" font-normal text-3xl capitalize">
+            {selectedForm?.header}
+          </Text>
+          <Text className=" font-medium mt-4">{selectedForm?.description}</Text>
         </View>
 
-        {formFields.map((field, index) => (
+        {selectedForm?.fields.map((field, index) => (
           <View key={field.id} className="p-4  rounded-lg bg-white mt-4">
             <View className="  rounded-md p-2 flex-row">
               <Text className=" text-lg text-black capitalize mr-1">
@@ -105,7 +128,7 @@ export default function FormPreview() {
             {(field.type === 'short' || field.type === 'paragraph') && (
               <TextInput
                 placeholder="Your answer"
-                value={fieldResponses[field.id] || ''}
+                value={fieldResponses[field?.id] || ''}
                 onChangeText={text => handleResponseChange(field.id, text)}
                 className=" border-b-[1px] border-gray-200 font-semibold  placeholder:text-gray-400 text-lg mt-2"
               />
@@ -120,7 +143,7 @@ export default function FormPreview() {
                 />
               </View>
             ) : null}
-            {field.type === 'checkbox' || field.type === 'multipleChoice' ? (
+            {['checkbox', 'multipleChoice'].includes(field.type) && (
               <View className=" px-2 mt-2">
                 {field.options.map((option, index) => (
                   <TouchableOpacity
@@ -141,10 +164,9 @@ export default function FormPreview() {
                   </TouchableOpacity>
                 ))}
               </View>
-            ) : null}
+            )}
 
-            {field.type === 'checkboxGrid' ||
-            field.type === 'multipleChoiceGrid' ? (
+            {['checkboxGrid', 'multipleChoiceGrid'].includes(field.type) ? (
               <View>
                 {/* Render Table Header */}
                 <View className="flex-row justify-between items-center my-2">
@@ -161,24 +183,28 @@ export default function FormPreview() {
                 {/* Render Table Rows */}
                 {field.rows.map((row, rowIndex) => (
                   <View
-                    key={`row-${rowIndex}`}
+                    key={rowIndex}
                     className="flex-row items-center mt-2 p-4 bg-gray-50">
                     <Text className="flex-1   font-normal  text-xl ">
                       {row}
                     </Text>
 
                     {/* Render Checkboxes for Each Column */}
-                    {field.columns.map((_, columnIndex) => (
+                    {field.columns.map((_, colIndex) => (
                       <TouchableOpacity
-                        key={`checkbox-${rowIndex}-${columnIndex}`}
-                        onPress={() => {
-                          console.log(
-                            `Row ${rowIndex + 1}, Column ${columnIndex + 1}`,
-                          );
-                        }}
+                        key={colIndex}
+                        onPress={() =>
+                          handleGridChange(field.id, rowIndex, colIndex)
+                        }
                         className="flex-1 items-center justify-center  ">
                         <VectorIcon
-                          iconName="circle"
+                          iconName={
+                            (fieldResponses[field.id] || []).includes(
+                              `${rowIndex}-${colIndex}`,
+                            )
+                              ? 'circle-with-minus'
+                              : 'circle'
+                          }
                           iconPack="Entypo"
                           size={24}
                         />
@@ -256,7 +282,9 @@ export default function FormPreview() {
               className=" bg-purple-700 py-2 px-6 rounded-md ">
               <Text className=" text-white font-medium ">Submit</Text>
             </TouchableOpacity>
-            <TouchableOpacity className="  py-2 px-4 rounded-md ">
+            <TouchableOpacity
+              onPress={handleClearForm}
+              className="  py-2 px-4 rounded-md ">
               <Text className=" text-purple-700 font-medium ">Clear form</Text>
             </TouchableOpacity>
           </View>

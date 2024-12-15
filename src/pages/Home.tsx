@@ -10,7 +10,7 @@ export default function Home() {
     <View className="flex-1 bg-white overflow-hidden">
       <View className="flex-grow flex-1 justify-center items-center">
         <TouchableOpacity
-          onPress={() => navigation.navigate('Dashboard')}
+          onPress={() => navigation.navigate('FormList')}
           className="border rounded-full w-fit p-6 flex-row gap-x-2 items-center">
           <Image
             source={require('../../assets/images/search.png')}

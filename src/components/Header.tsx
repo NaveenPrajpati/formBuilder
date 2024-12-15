@@ -9,7 +9,7 @@ export default function Header({navigation}) {
   const {header} = useAppSelector(state => state.form);
   return (
     <View className="flex-row justify-between items-center  w-full py-2 px-6 bg-white">
-      {route?.name == 'Dashboard' ? (
+      {route?.name == 'FormList' ? (
         <VectorIcon
           iconName="settings-outline"
           iconPack="Ionicons"
@@ -34,7 +34,7 @@ export default function Header({navigation}) {
         ellipsizeMode="tail" // Adds '...' if text overflows
         style={{flexShrink: 1}} // Allows text to shrink if necessary
       >
-        {route.name == 'Dashboard' ? 'All Forms' : `${header}`}
+        {route.name == 'FormList' ? 'All Forms' : `${header}`}
       </Text>
       <View className=" flex-row items-center gap-x-4">
         <Image
@@ -43,7 +43,7 @@ export default function Header({navigation}) {
           height={20}
           className="h-8 w-8"
         />
-        {route.name != 'Dashboard' && (
+        {route.name != 'FormList' && (
           <VectorIcon
             iconName="share-2"
             iconPack="Feather"

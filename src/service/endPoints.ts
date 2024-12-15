@@ -1,7 +1,5 @@
-const BaseUrl = __DEV__
-  ? 'http://192.168.0.155:4000/api'
-  : 'https://formbuilderback.onrender.com/api';
-
-export const ImageUploadApi = BaseUrl + '/upload-image';
-export const FormCreateApi = BaseUrl + '/form';
-export const ResponseCreateApi = BaseUrl + '/response';
+export const ImageUploadApi = '/upload-image';
+export const FormCreateApi = '/form';
+export const FormUpdateApi = (id: string) => `/form/${id}`;
+export const FormByIdApi = (id: string) => `/form/${id}`;
+export const ResponseCreateApi = '/response';

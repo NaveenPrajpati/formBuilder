@@ -2,15 +2,16 @@ import {View, Text, StatusBar} from 'react-native';
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Home from './pages/Home';
-import Settings from './pages/Tabs/Settings';
 import Header from './components/Header';
-import Dashboard from './pages/Dashboard';
+import FormList from './pages/FormList';
 import CreateForm from './pages/Tabs/CreateForm';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import FormPreview from './pages/Tabs/FormPreview';
 import Templates from './pages/Templates';
 import Responses from './pages/Tabs/Responses';
 import {DarkTheme} from '@react-navigation/native';
+import FormSetting from './pages/Tabs/FormSetting';
+import Settings from './pages/Settings';
 const Tab = createMaterialTopTabNavigator();
 
 function MyTabs() {
@@ -38,9 +39,9 @@ function MyTabs() {
         component={Responses}
       />
       <Tab.Screen
-        name="Settings"
+        name="FormSetting"
         options={{tabBarLabel: 'SETTINGS'}}
-        component={Settings}
+        component={FormSetting}
       />
     </Tab.Navigator>
   );
@@ -59,11 +60,11 @@ export default function Routes() {
         />
         {/* <Stack.Screen name="Settings" component={Settings} /> */}
         <Stack.Screen
-          name="Dashboard"
-          component={Dashboard}
+          name="FormList"
+          component={FormList}
           options={{
             header: ({navigation, route}) => (
-              <Header navigation={navigation} title="Dashboard" />
+              <Header navigation={navigation} title="FormList" />
             ),
           }}
         />
@@ -83,6 +84,13 @@ export default function Routes() {
           options={{
             headerTintColor: 'white',
             headerStyle: {backgroundColor: '#7c3aed'},
+          }}
+        />
+        <Stack.Screen
+          name="Settings"
+          component={Settings}
+          options={{
+            headerTitleAlign: 'center',
           }}
         />
       </Stack.Navigator>
