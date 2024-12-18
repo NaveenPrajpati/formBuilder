@@ -105,7 +105,6 @@ export default function FormList() {
             <TouchableOpacity
               onPress={() => {
                 setInfoToShow(item);
-                setVisible(true);
               }}
               className=" flex-row items-center gap-x-4  p-2">
               <VectorIcon

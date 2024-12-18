@@ -1,31 +1,21 @@
+import React, {useState} from 'react';
 import {
-  View,
+  Image,
+  ScrollView,
+  Switch,
   Text,
   TextInput,
-  Button,
-  ScrollView,
   TouchableOpacity,
-  Switch,
-  Image,
+  View,
 } from 'react-native';
-import React, {useState} from 'react';
-import VectorIcon from '../../components/VectorIcon';
-import CreateFromMenu from '../../components/CreateFromMenu';
+import {ActivityIndicator} from 'react-native-paper';
 import AddOptions from '../../components/modals/AddOptions';
-import SwitchTag from '../../components/tags/SwitchTag';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {useAppDispatch, useAppSelector} from '../../redux/hooks';
-import {
-  addField,
-  addHeader,
-  deleteField,
-  updateField,
-} from '../../redux/slices/formSlice';
 import DropdownTag from '../../components/tags/DropdownTag';
-import axios from 'axios';
+import VectorIcon from '../../components/VectorIcon';
+import {useAppDispatch, useAppSelector} from '../../redux/hooks';
+import {updateField} from '../../redux/slices/formSlice';
 import {ResponseCreateApi} from '../../service/endPoints';
 import {axiosInstance} from '../../service/interceptor';
-import {ActivityIndicator} from 'react-native-paper';
 export default function FormPreview() {
   const [showAddItem, setShowAddItem] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
@@ -63,13 +53,19 @@ export default function FormPreview() {
     }));
   };
 
-  const handleMultipleChoiceChange = (fieldId, option) => {
+  const handleCheckoxOption = (field, option) => {
+    const fieldId = field.id;
     if (!fieldId || !option) return;
 
     const existingAnswers = fieldResponses[fieldId] || [];
-    const updatedAnswers = existingAnswers.includes(option)
-      ? existingAnswers.filter(o => o !== option)
-      : [...existingAnswers, option];
+    let updatedAnswers = [];
+    if (field.multipleChoice) {
+      updatedAnswers = existingAnswers.includes(option)
+        ? existingAnswers.filter(o => o !== option)
+        : [...existingAnswers, option];
+    } else {
+      updatedAnswers = [option];
+    }
 
     setFieldResponses(prev => ({
       ...prev,
@@ -85,12 +81,22 @@ export default function FormPreview() {
     setFieldResponses({});
   };
 
-  const handleGridChange = (fieldId, rowIndex, columnIndex) => {
+  const handleGridChange = (field, rowIndex, columnIndex) => {
+    const fieldId = field.id;
     const key = `${rowIndex}-${columnIndex}`;
     const existingAnswers = fieldResponses[fieldId] || [];
-    const updatedAnswers = existingAnswers.includes(key)
-      ? existingAnswers.filter(k => k !== key)
-      : [...existingAnswers, key];
+
+    let updatedAnswers = [];
+    if (field.multipleChoice) {
+      updatedAnswers = existingAnswers.includes(key)
+        ? existingAnswers.filter(k => k !== key)
+        : [...existingAnswers, key];
+    } else {
+      updatedAnswers = existingAnswers.filter(
+        it => !it.startsWith(`${rowIndex}-`),
+      );
+      updatedAnswers.push(key);
+    }
 
     setFieldResponses(prev => ({
       ...prev,
@@ -151,7 +157,7 @@ export default function FormPreview() {
                 {field.options.map((option, index) => (
                   <TouchableOpacity
                     key={index}
-                    onPress={() => handleMultipleChoiceChange(field.id, option)}
+                    onPress={() => handleCheckoxOption(field, option)}
                     className=" flex-row items-center gap-x-3 mt-6">
                     <VectorIcon
                       iconName={
@@ -197,7 +203,7 @@ export default function FormPreview() {
                       <TouchableOpacity
                         key={colIndex}
                         onPress={() =>
-                          handleGridChange(field.id, rowIndex, colIndex)
+                          handleGridChange(field, rowIndex, colIndex)
                         }
                         className="flex-1 items-center justify-center  ">
                         <VectorIcon
@@ -296,11 +302,11 @@ export default function FormPreview() {
               <Text className=" text-purple-700 font-medium ">Clear form</Text>
             </TouchableOpacity>
           </View>
-          <Text className=" text-gray-700">
+          <Text className=" text-gray-700 text-center">
             Never submit passwords through Google Forms.
           </Text>
 
-          <View className=" text-center flex items-center p-2">
+          <View className=" text-center flex items-center p-2 mb-10">
             <Text className=" text-gray-700  mx-auto">
               This form was created inside solidauto.in
             </Text>

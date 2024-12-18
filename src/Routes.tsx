@@ -1,18 +1,17 @@
-import {View, Text, StatusBar} from 'react-native';
-import React from 'react';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import Home from './pages/Home';
+import React from 'react';
+import {SafeAreaView, StatusBar, View} from 'react-native';
 import Header from './components/Header';
 import FormList from './pages/FormList';
-import CreateForm from './pages/tabs/CreateForm';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import FormPreview from './pages/tabs/FormPreview';
-import Templates from './pages/Templates';
-import Responses from './pages/tabs/responses/Responses';
-import {DarkTheme} from '@react-navigation/native';
-import FormSetting from './pages/tabs/FormSetting';
+import Home from './pages/Home';
 import Settings from './pages/Settings';
-import ResponseTabs from './pages/tabs/ResponseTabs';
+import CreateForm from './pages/Tabs/CreateForm';
+import FormPreview from './pages/Tabs/FormPreview';
+import FormSetting from './pages/Tabs/FormSetting';
+import Templates from './pages/Templates';
+import ResponseTabs from './pages/Tabs/ResponseTabs';
+
 const Tab = createMaterialTopTabNavigator();
 
 function MyTabs() {
@@ -51,21 +50,29 @@ function MyTabs() {
 export default function Routes() {
   const Stack = createNativeStackNavigator();
   return (
-    <View className=" flex-1">
+    <SafeAreaView className=" flex-1">
       <StatusBar barStyle={'dark-content'} backgroundColor={'white'} />
-      <Stack.Navigator screenOptions={{}}>
+      <Stack.Navigator
+        screenOptions={{
+          headerBackButtonDisplayMode: 'minimal',
+          headerTintColor: 'black',
+        }}>
         <Stack.Screen
           name="Home"
           component={Home}
           options={{headerShown: false}}
         />
-        {/* <Stack.Screen name="Settings" component={Settings} /> */}
         <Stack.Screen
           name="FormList"
           component={FormList}
           options={{
-            header: ({navigation, route}) => (
-              <Header navigation={navigation} title="FormList" />
+            header: ({navigation, route, options, back}) => (
+              <Header
+                navigation={navigation}
+                route={route}
+                options={options}
+                back={back}
+              />
             ),
           }}
         />
@@ -74,8 +81,13 @@ export default function Routes() {
           name="Tabs"
           component={MyTabs}
           options={{
-            header: ({navigation, route}) => (
-              <Header navigation={navigation} route={route} />
+            header: ({navigation, route, options, back}) => (
+              <Header
+                navigation={navigation}
+                route={route}
+                options={options}
+                back={back}
+              />
             ),
           }}
         />
@@ -95,6 +107,6 @@ export default function Routes() {
           }}
         />
       </Stack.Navigator>
-    </View>
+    </SafeAreaView>
   );
 }

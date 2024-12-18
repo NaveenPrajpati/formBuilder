@@ -4,9 +4,8 @@ import VectorIcon from './VectorIcon';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useAppSelector} from '../redux/hooks';
 
-export default function Header({navigation}) {
-  const route = useRoute();
-  const {header} = useAppSelector(state => state.form);
+export default function Header({navigation, route, options, back}) {
+  const {selectedForm} = useAppSelector(state => state.form);
   return (
     <View className="flex-row justify-between items-center  w-full py-2 px-6 bg-white">
       {route?.name == 'FormList' ? (
@@ -34,7 +33,7 @@ export default function Header({navigation}) {
         ellipsizeMode="tail" // Adds '...' if text overflows
         style={{flexShrink: 1}} // Allows text to shrink if necessary
       >
-        {route.name == 'FormList' ? 'All Forms' : `${header}`}
+        {route.name == 'FormList' ? 'All Forms' : `${selectedForm.header}`}
       </Text>
       <View className=" flex-row items-center gap-x-4">
         <Image

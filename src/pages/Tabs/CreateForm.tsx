@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -28,6 +28,7 @@ import {uploadImage} from '../../utils/utilityFunctions';
 import {axiosInstance} from '../../service/interceptor';
 import {FormByIdApi} from '../../service/endPoints';
 import InputTag from '../../components/elements/InputTag';
+import {useFocusEffect} from '@react-navigation/native';
 
 export default function CreateForm({route}) {
   const [showAddItem, setShowAddItem] = useState(false);
@@ -85,20 +86,12 @@ export default function CreateForm({route}) {
     dispatch(addField(newField));
   };
 
-  console.log(formFields);
-
-  useEffect(() => {
-    return () => {
-      dispatch(resetField({}));
-      dispatch(resetHeader({}));
-    };
-  }, []);
-
   const handleUpdateField = (
     id: any,
     key: string,
     value: string | any[] | undefined,
   ) => {
+    console.log({id, key, value});
     dispatch(updateField({id, key, value}));
   };
 
@@ -121,9 +114,16 @@ export default function CreateForm({route}) {
     dispatch(addHeader({field: 'headerImg', data: uploadedUrl}));
   }
 
-  useEffect(() => {
-    axiosInstance.get(FormByIdApi());
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      // axiosInstance.get(FormByIdApi());
+      return () => {
+        console.log('return');
+        // dispatch(resetField({}));
+        // dispatch(resetHeader({}));
+      };
+    }, [dispatch]),
+  );
 
   return (
     <View className="bg-purple-100 flex justify-between  flex-1 ">
@@ -170,13 +170,11 @@ export default function CreateForm({route}) {
               </TouchableOpacity>
               {selectedForm?.headerImg.length != 0 && (
                 <View className=" flex-row items-center gap-x-2  mt-2">
-                  (
                   <TouchableOpacity
                     className=" mr-1"
                     onPress={() => pickHeaderImage()}>
                     <Text className=" text-blue-500 font-semibold">Change</Text>
                   </TouchableOpacity>
-                  )
                   <VectorIcon
                     iconName="delete"
                     iconPack="AntDesign"
@@ -202,10 +200,12 @@ export default function CreateForm({route}) {
                 <TextInput
                   placeholder="Question"
                   value={field.question}
+                  editable={true}
+                  keyboardType="default"
                   onChangeText={text =>
                     handleUpdateField(field.id, 'question', text)
                   }
-                  className=" border-b-[1px] border-gray-200 font-semibold  placeholder:text-black text-xl mt-2"
+                  className=" border-b-[1px] border-gray-200 font-semibold  placeholder:text-gray-400 text-xl mt-2"
                 />
               )}
 
@@ -222,7 +222,7 @@ export default function CreateForm({route}) {
                       <View
                         key={index}
                         className=" mt-2 flex-row items-center justify-between gap-x-2">
-                        <View className=" flex-row items-center gap-x-1">
+                        <View className=" flex-row items-center gap-x-1 flex-grow ">
                           {field?.type === 'dropdown' && (
                             <Text>{index + 1}</Text>
                           )}
@@ -249,14 +249,16 @@ export default function CreateForm({route}) {
                                 updatedOptions,
                               );
                             }}
-                            className=" border-b-[1px] border-gray-200 font-semibold  placeholder:text-gray-400 text-xl "
+                            className=" border-b-[1px] border-gray-200 font-semibold  placeholder:text-gray-400 text-xl w-[90%]"
                           />
                         </View>
-                        <VectorIcon
-                          iconName="close"
-                          iconPack="AntDesign"
-                          size={20}
-                        />
+                        <TouchableOpacity className="">
+                          <VectorIcon
+                            iconName="close"
+                            iconPack="AntDesign"
+                            size={20}
+                          />
+                        </TouchableOpacity>
                       </View>
                     ),
                   )}
@@ -265,7 +267,7 @@ export default function CreateForm({route}) {
                       onPress={() => {
                         handleUpdateField(field.id, 'options', [
                           ...field.options,
-                          `Option ${field.options.length + 1}`,
+                          ``,
                         ]);
                       }}>
                       <Text className=" text-blue-500 font-semibold">
@@ -302,7 +304,7 @@ export default function CreateForm({route}) {
                       <View
                         key={index}
                         className=" mt-2 flex-row items-center justify-between gap-x-2">
-                        <View className=" flex-row items-center gap-x-1">
+                        <View className=" flex-row items-center gap-x-1 flex-grow ">
                           <Text>{index + 1}.</Text>
                           <TextInput
                             key={`row-${index}`}
@@ -313,7 +315,7 @@ export default function CreateForm({route}) {
                               updatedRows[index] = text;
                               handleUpdateField(field.id, 'rows', updatedRows);
                             }}
-                            className=" border-b-[1px] border-gray-200 font-semibold  placeholder:text-black text-xl "
+                            className=" border-b-[1px] border-gray-200 font-semibold  placeholder:text-gray-400 text-xl w-[90%]"
                           />
                         </View>
                         <VectorIcon
@@ -330,7 +332,7 @@ export default function CreateForm({route}) {
                       onPress={() => {
                         handleUpdateField(field.id, 'rows', [
                           ...field.rows,
-                          `Row ${field.rows.length + 1}`,
+                          ``,
                         ]);
                       }}>
                       <Text className=" text-blue-500 font-semibold">
@@ -368,7 +370,7 @@ export default function CreateForm({route}) {
                                 updatedColumns,
                               );
                             }}
-                            className=" border-b-[1px] border-gray-200 font-semibold  placeholder:text-black text-xl "
+                            className=" border-b-[1px] border-gray-200 font-semibold  placeholder:text-gray-400 text-xl w-[90%]"
                           />
                         </View>
                         <VectorIcon
@@ -385,7 +387,7 @@ export default function CreateForm({route}) {
                       onPress={() => {
                         handleUpdateField(field.id, 'columns', [
                           ...field.columns,
-                          `Column ${field.columns.length + 1}`,
+                          ``,
                         ]);
                       }}>
                       <Text className=" text-blue-500 font-semibold">

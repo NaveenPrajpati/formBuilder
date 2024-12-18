@@ -108,7 +108,7 @@ export default function Responses() {
     axiosInstance
       .get(ResponsesByFormApi(selectedForm._id))
       .then(res => {
-        console.log(res.data);
+        console.log(JSON.stringify(res.data, null, 2));
         setAllResponses(res.data.data);
       })
       .catch(err => {
@@ -122,6 +122,8 @@ export default function Responses() {
       return () => {};
     }, []),
   );
+
+  const submission = allResponses[0]?.answers[0];
 
   return (
     <View className="bg-purple-100 flex justify-between  flex-1 ">

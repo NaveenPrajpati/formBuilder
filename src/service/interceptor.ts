@@ -1,6 +1,6 @@
 import axios from 'axios';
 const BaseUrl = __DEV__
-  ? 'http://192.168.0.155:4000/api'
+  ? 'http://192.168.0.151:4000/api'
   : 'https://formbuilderback.onrender.com/api';
 
 export const axiosInstance = axios.create({
